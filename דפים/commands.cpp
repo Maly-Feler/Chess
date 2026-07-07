@@ -2,22 +2,31 @@
 #include <iostream>
 #include <sstream>
 #include <cmath>
+#include <algorithm>
 
 static int moveDistance(int fromRow, int fromCol, int toRow, int toCol) {
     return std::max(abs(toRow - fromRow), abs(toCol - fromCol));
 }
 
-static void applyPendingMove(GameState& state) {
-    if (!state.pending.active) return;
-    if (state.clock < state.pending.arrivalTime) return;
+static void applyPendingMoves(GameState& state) {
+    std::vector<PendingMove> remaining;
+    for (auto& pm : state.pending) {
+        if (state.clock >= pm.arrivalTime) {
+            delete state.board.grid[pm.toRow][pm.toCol];
+            state.board.grid[pm.toRow][pm.toCol] = state.board.grid[pm.fromRow][pm.fromCol];
+            state.board.grid[pm.fromRow][pm.fromCol] = nullptr;
+        } else {
+            remaining.push_back(pm);
+        }
+    }
+    state.pending = remaining;
+}
 
-    int fr = state.pending.fromRow, fc = state.pending.fromCol;
-    int tr = state.pending.toRow,   tc = state.pending.toCol;
-
-    delete state.board.grid[tr][tc];
-    state.board.grid[tr][tc] = state.board.grid[fr][fc];
-    state.board.grid[fr][fc] = nullptr;
-    state.pending.active = false;
+static bool isMoving(GameState& state, int row, int col) {
+    for (auto& pm : state.pending)
+        if (pm.fromRow == row && pm.fromCol == col)
+            return true;
+    return false;
 }
 
 static void handleClick(int x, int y, GameState& state) {
@@ -31,11 +40,7 @@ static void handleClick(int x, int y, GameState& state) {
     bool hasSelection = state.selectedRow != -1;
 
     if (!hasSelection) {
-        if (cell != nullptr) {
-            // אם הכלי כבר בתנועה - מתעלמים
-            if (state.pending.active &&
-                state.pending.fromRow == row && state.pending.fromCol == col)
-                return;
+        if (cell != nullptr && !isMoving(state, row, col)) {
             state.selectedRow = row;
             state.selectedCol = col;
         }
@@ -54,9 +59,13 @@ static void handleClick(int x, int y, GameState& state) {
     if (!selected->isValidMove(state.selectedRow, state.selectedCol, row, col, state.board.grid))
         return;
 
+    // רק כלי אחד יכול לזוז בכל פעם
+    if (!state.pending.empty())
+        return;
+
     int dist = moveDistance(state.selectedRow, state.selectedCol, row, col);
-    state.pending = {state.selectedRow, state.selectedCol, row, col,
-                     state.clock + dist * 1000, true};
+    state.pending.push_back({state.selectedRow, state.selectedCol, row, col,
+                              state.clock + dist * 1000});
     state.selectedRow = -1;
     state.selectedCol = -1;
 }
@@ -64,7 +73,7 @@ static void handleClick(int x, int y, GameState& state) {
 void runCommands(const std::vector<std::string>& commands, GameState& state) {
     for (const std::string& cmd : commands) {
         if (cmd == "print board") {
-            applyPendingMove(state);
+            applyPendingMoves(state);
             for (const auto& row : state.board.grid) {
                 for (int i = 0; i < (int)row.size(); i++) {
                     if (i > 0) std::cout << " ";
@@ -73,6 +82,7 @@ void runCommands(const std::vector<std::string>& commands, GameState& state) {
                 std::cout << "\n";
             }
         } else if (cmd.substr(0, 5) == "click") {
+            applyPendingMoves(state);
             int x, y;
             std::istringstream ss(cmd.substr(6));
             ss >> x >> y;
