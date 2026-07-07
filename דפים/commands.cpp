@@ -9,34 +9,45 @@ static int moveDistance(int fromRow, int fromCol, int toRow, int toCol) {
 }
 
 static void applyPendingMoves(GameState& state) {
-    // מיין לפי זמן התחלה - מי שהתחיל אחרון מנצח בהתנגשות
-    std::sort(state.pending.begin(), state.pending.end(),
+    std::vector<PendingMove> ready;
+    std::vector<PendingMove> remaining;
+
+    for (auto& pm : state.pending) {
+        if (state.clock >= pm.arrivalTime)
+            ready.push_back(pm);
+        else
+            remaining.push_back(pm);
+    }
+
+    // מיין לפי זמן התחלה יורד - מי שהתחיל אחרון מנצח
+    std::sort(ready.begin(), ready.end(),
         [](const PendingMove& a, const PendingMove& b) {
             return a.startTime > b.startTime;
         });
 
-    std::vector<PendingMove> remaining;
-    for (auto& pm : state.pending) {
-        if (state.clock < pm.arrivalTime) {
-            remaining.push_back(pm);
-            continue;
-        }
+    // סמן תאי יעד שכבר נתפסו
+    std::vector<std::pair<int,int>> taken;
 
+    for (auto& pm : ready) {
         Piece* moving = state.board.grid[pm.fromRow][pm.fromCol];
-        if (moving == nullptr) continue; // כבר הוזז
+        if (moving == nullptr) continue;
+
+        // בדוק אם היעד כבר נתפס
+        bool destTaken = false;
+        for (auto& t : taken)
+            if (t.first == pm.toRow && t.second == pm.toCol) { destTaken = true; break; }
+        if (destTaken) continue;
 
         Piece* target = state.board.grid[pm.toRow][pm.toCol];
 
-        if (target != nullptr && target->color == moving->color) {
-            // נחיתה על ידידותי - מבטלים
-            continue;
-        }
+        if (target != nullptr && target->color == moving->color) continue; // ידידותי - מבטלים
 
-        // אוכל אויב או תא ריק
         delete target;
         state.board.grid[pm.toRow][pm.toCol] = moving;
         state.board.grid[pm.fromRow][pm.fromCol] = nullptr;
+        taken.push_back({pm.toRow, pm.toCol});
     }
+
     state.pending = remaining;
 }
 
