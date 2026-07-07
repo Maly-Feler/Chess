@@ -3,6 +3,7 @@
 
 class Pawn : public Piece {
 public:
+    bool hasMoved = false;
     Pawn(Color c) : Piece(c, 'P') {}
 
     bool isValidMove(int fromRow, int fromCol, int toRow, int toCol,
@@ -16,8 +17,7 @@ public:
             return true;
 
         // צעד כפול מהשורה ההתחלתית
-        int startRow = (color == Color::White) ? (int)grid.size() - 2 : 1;
-        if (dc == 0 && dr == 2 * dir && fromRow == startRow
+        if (!hasMoved && dc == 0 && dr == 2 * dir
             && grid[fromRow + dir][fromCol] == nullptr
             && grid[toRow][toCol] == nullptr)
             return true;

@@ -82,6 +82,8 @@ static void applyPendingMoves(GameState& state) {
             if (pm.toRow == lastRow) {
                 state.board.grid[pm.toRow][pm.toCol] = new Queen(moving->color);
                 delete moving;
+            } else {
+                static_cast<Pawn*>(moving)->hasMoved = true;
             }
         }
 
