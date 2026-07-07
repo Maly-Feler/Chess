@@ -3,4 +3,4 @@
 #include <string>
 #include <vector>
 
-void runCommands(const std::vector<std::string>& commands, const Board& board);
+void runCommands(const std::vector<std::string>& commands, GameState& state);

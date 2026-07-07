@@ -6,7 +6,7 @@
 
 int main() {
     std::string line;
-    std::getline(std::cin, line);
+    std::getline(std::cin, line); // "Board:"
 
     std::vector<std::string> boardLines;
     while (std::getline(std::cin, line) && line != "Commands:") {
@@ -18,13 +18,13 @@ int main() {
         if (!line.empty()) commands.push_back(line);
     }
 
-    Board board;
+    GameState state;
     std::string error;
-    if (!parseBoard(boardLines, board, error)) {
+    if (!parseBoard(boardLines, state.board, error)) {
         std::cout << error << "\n";
         return 0;
     }
 
-    runCommands(commands, board);
+    runCommands(commands, state);
     return 0;
 }
