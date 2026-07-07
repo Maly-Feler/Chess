@@ -19,8 +19,6 @@ static void applyPendingMoves(GameState& state) {
             remaining.push_back(pm);
     }
 
-    // זהה התנגשויות חזיתיות - A הולך מ-X ל-Y וB הולך מ-Y ל-X
-    // המנצח הוא מי שהתחיל אחרון, המפסיד נמחק
     std::vector<bool> cancelled(ready.size(), false);
     for (int i = 0; i < (int)ready.size(); i++) {
         for (int j = i + 1; j < (int)ready.size(); j++) {
@@ -32,15 +30,12 @@ static void applyPendingMoves(GameState& state) {
             Piece* pa = state.board.grid[a.fromRow][a.fromCol];
             Piece* pb = state.board.grid[b.fromRow][b.fromCol];
             if (pa == nullptr || pb == nullptr) continue;
-            if (pa->color == pb->color) continue; // ידידותיים - לא רלוונטי
-            // מי שהתחיל אחרון מנצח - המפסיד נמחק ומבוטל
+            if (pa->color == pb->color) continue;
             if (a.startTime >= b.startTime) {
-                // a מנצח - b נמחק
                 delete state.board.grid[b.fromRow][b.fromCol];
                 state.board.grid[b.fromRow][b.fromCol] = nullptr;
                 cancelled[j] = true;
             } else {
-                // b מנצח - a נמחק
                 delete state.board.grid[a.fromRow][a.fromCol];
                 state.board.grid[a.fromRow][a.fromCol] = nullptr;
                 cancelled[i] = true;
@@ -48,17 +43,19 @@ static void applyPendingMoves(GameState& state) {
         }
     }
 
-    // מיין לפי זמן התחלה יורד - מי שהתחיל אחרון מנצח בהתנגשות ביעד
-    std::sort(ready.begin(), ready.end(),
-        [](const PendingMove& a, const PendingMove& b) {
-            return a.startTime > b.startTime;
+    std::vector<std::pair<PendingMove,bool>> readyWithFlag;
+    for (int i = 0; i < (int)ready.size(); i++)
+        readyWithFlag.push_back({ready[i], cancelled[i]});
+
+    std::sort(readyWithFlag.begin(), readyWithFlag.end(),
+        [](const std::pair<PendingMove,bool>& a, const std::pair<PendingMove,bool>& b) {
+            return a.first.startTime > b.first.startTime;
         });
 
     std::vector<std::pair<int,int>> taken;
 
-    for (int i = 0; i < (int)ready.size(); i++) {
-        if (cancelled[i]) continue;
-        auto& pm = ready[i];
+    for (auto& [pm, isCancelled] : readyWithFlag) {
+        if (isCancelled) continue;
         Piece* moving = state.board.grid[pm.fromRow][pm.fromCol];
         if (moving == nullptr) continue;
 
@@ -75,10 +72,13 @@ static void applyPendingMoves(GameState& state) {
         state.board.grid[pm.fromRow][pm.fromCol] = nullptr;
         taken.push_back({pm.toRow, pm.toCol});
 
-        // בדוק אם אכלנו מלך
         if (target != nullptr && target->type == 'K') {
             state.gameOver = true;
             state.winner = (moving->color == Color::White) ? "white" : "black";
+            state.pending.clear();
+            state.selectedRow = -1;
+            state.selectedCol = -1;
+            return;
         }
     }
 
@@ -93,6 +93,7 @@ static bool isMoving(GameState& state, int row, int col) {
 }
 
 static void handleClick(int x, int y, GameState& state) {
+    if (state.gameOver) return;
     int col = x / 100;
     int row = y / 100;
 
@@ -144,6 +145,7 @@ void runCommands(const std::vector<std::string>& commands, GameState& state) {
             continue;
         } else if (cmd.substr(0, 5) == "click") {
             applyPendingMoves(state);
+            if (state.gameOver) continue;
             int x, y;
             std::istringstream ss(cmd.substr(6));
             ss >> x >> y;
@@ -153,6 +155,7 @@ void runCommands(const std::vector<std::string>& commands, GameState& state) {
             std::istringstream ss(cmd.substr(5));
             ss >> ms;
             state.clock += ms;
+            applyPendingMoves(state);
         }
     }
 }
