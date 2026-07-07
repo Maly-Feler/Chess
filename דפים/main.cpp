@@ -4,18 +4,29 @@
 #include "board.h"
 #include "commands.h"
 
+static std::string trim(const std::string& s) {
+    int start = 0;
+    while (start < (int)s.size() && s[start] == ' ') start++;
+    return s.substr(start);
+}
+
 int main() {
     std::string line;
-    std::getline(std::cin, line); // "Board:"
+
+    // קרא עד שמוצאים "Board:"
+    while (std::getline(std::cin, line)) {
+        if (trim(line) == "Board:") break;
+    }
 
     std::vector<std::string> boardLines;
-    while (std::getline(std::cin, line) && line != "Commands:") {
+    while (std::getline(std::cin, line) && trim(line) != "Commands:") {
         boardLines.push_back(line);
     }
 
     std::vector<std::string> commands;
     while (std::getline(std::cin, line)) {
-        if (!line.empty()) commands.push_back(line);
+        std::string t = trim(line);
+        if (!t.empty()) commands.push_back(t);
     }
 
     GameState state;

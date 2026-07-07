@@ -59,15 +59,20 @@ int main() {
         "Board:\n. . .\nbP . .\n. . .\nCommands:\nclick 50 150\nclick 50 250\nprint board\n",
         ". . .\n. . .\nbP . .\n");
 
-    // לבן זז שתיים מהשורה ההתחלתית
+    // לבן זז שתיים מהשורה ההתחלתית (שורה 1 בלוח 3 שורות = grid.size()-2)
     runTest("white pawn moves two from start",
-        "Board:\n. . .\n. . .\nwP . .\nCommands:\nclick 50 250\nclick 50 50\nprint board\n",
-        "wP . .\n. . .\n. . .\n");
+        "Board:\n. . .\nwP . .\n. . .\nCommands:\nclick 50 150\nclick 50 -50\nprint board\n",
+        ". . .\nwP . .\n. . .\n");
+
+    // לבן זז שתיים בלוח 4 שורות (startRow = 2)
+    runTest("white pawn moves two from start row 4x3",
+        "Board:\n. . .\n. . .\nwP . .\n. . .\nCommands:\nclick 50 250\nclick 50 50\nprint board\n",
+        ". . .\nwP . .\n. . .\n. . .\n");
 
     // לבן לא יכול לזוז שתיים שלא מהשורה ההתחלתית
     runTest("white pawn cannot move two from non-start",
-        "Board:\n. . .\nwP . .\n. . .\nCommands:\nclick 50 150\nclick 50 -50\nprint board\n",
-        ". . .\nwP . .\n. . .\n");
+        "Board:\n. . .\nwP . .\n. . .\n. . .\nCommands:\nclick 50 150\nclick 50 -50\nprint board\n",
+        ". . .\nwP . .\n. . .\n. . .\n");
 
     // לבן אוכל באלכסון
     runTest("white pawn captures diagonally",
