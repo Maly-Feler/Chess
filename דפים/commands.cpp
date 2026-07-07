@@ -74,6 +74,12 @@ static void applyPendingMoves(GameState& state) {
         state.board.grid[pm.toRow][pm.toCol] = moving;
         state.board.grid[pm.fromRow][pm.fromCol] = nullptr;
         taken.push_back({pm.toRow, pm.toCol});
+
+        // בדוק אם אכלנו מלך
+        if (target != nullptr && target->type == 'K') {
+            state.gameOver = true;
+            state.winner = (moving->color == Color::White) ? "white" : "black";
+        }
     }
 
     state.pending = remaining;
@@ -134,6 +140,8 @@ void runCommands(const std::vector<std::string>& commands, GameState& state) {
                 }
                 std::cout << "\n";
             }
+        } else if (state.gameOver) {
+            continue;
         } else if (cmd.substr(0, 5) == "click") {
             applyPendingMoves(state);
             int x, y;

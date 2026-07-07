@@ -34,6 +34,8 @@ struct GameState {
     int selectedCol = -1;
     int clock = 0;
     std::vector<PendingMove> pending;
+    bool gameOver = false;
+    std::string winner;
 };
 
 bool parseBoard(const std::vector<std::string>& lines, Board& board, std::string& error);
