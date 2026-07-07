@@ -15,6 +15,13 @@ public:
         if (dc == 0 && dr == dir && grid[toRow][toCol] == nullptr)
             return true;
 
+        // צעד כפול מהשורה ההתחלתית
+        int startRow = (color == Color::White) ? (int)grid.size() - 2 : 1;
+        if (dc == 0 && dr == 2 * dir && fromRow == startRow
+            && grid[fromRow + dir][fromCol] == nullptr
+            && grid[toRow][toCol] == nullptr)
+            return true;
+
         // אכילה אלכסונית
         if (abs(dc) == 1 && dr == dir && grid[toRow][toCol] != nullptr
             && grid[toRow][toCol]->color != color)
