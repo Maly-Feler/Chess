@@ -1,5 +1,7 @@
+#include "board.h"
 #include <sstream>
 #include <set>
+#include <vector>
 
 static const std::set<std::string> VALID_TOKENS = {
     "wK","bK","wQ","bQ","wR","bR","wN","bN","wB","bB","wP","bP","."
