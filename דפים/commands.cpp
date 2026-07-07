@@ -19,28 +19,56 @@ static void applyPendingMoves(GameState& state) {
             remaining.push_back(pm);
     }
 
-    // מיין לפי זמן התחלה יורד - מי שהתחיל אחרון מנצח
+    // זהה התנגשויות חזיתיות - A הולך מ-X ל-Y וB הולך מ-Y ל-X
+    // המנצח הוא מי שהתחיל אחרון, המפסיד נמחק
+    std::vector<bool> cancelled(ready.size(), false);
+    for (int i = 0; i < (int)ready.size(); i++) {
+        for (int j = i + 1; j < (int)ready.size(); j++) {
+            auto& a = ready[i];
+            auto& b = ready[j];
+            bool headOn = (a.fromRow == b.toRow && a.fromCol == b.toCol &&
+                           a.toRow == b.fromRow && a.toCol == b.fromCol);
+            if (!headOn) continue;
+            Piece* pa = state.board.grid[a.fromRow][a.fromCol];
+            Piece* pb = state.board.grid[b.fromRow][b.fromCol];
+            if (pa == nullptr || pb == nullptr) continue;
+            if (pa->color == pb->color) continue; // ידידותיים - לא רלוונטי
+            // מי שהתחיל אחרון מנצח - המפסיד נמחק ומבוטל
+            if (a.startTime >= b.startTime) {
+                // a מנצח - b נמחק
+                delete state.board.grid[b.fromRow][b.fromCol];
+                state.board.grid[b.fromRow][b.fromCol] = nullptr;
+                cancelled[j] = true;
+            } else {
+                // b מנצח - a נמחק
+                delete state.board.grid[a.fromRow][a.fromCol];
+                state.board.grid[a.fromRow][a.fromCol] = nullptr;
+                cancelled[i] = true;
+            }
+        }
+    }
+
+    // מיין לפי זמן התחלה יורד - מי שהתחיל אחרון מנצח בהתנגשות ביעד
     std::sort(ready.begin(), ready.end(),
         [](const PendingMove& a, const PendingMove& b) {
             return a.startTime > b.startTime;
         });
 
-    // סמן תאי יעד שכבר נתפסו
     std::vector<std::pair<int,int>> taken;
 
-    for (auto& pm : ready) {
+    for (int i = 0; i < (int)ready.size(); i++) {
+        if (cancelled[i]) continue;
+        auto& pm = ready[i];
         Piece* moving = state.board.grid[pm.fromRow][pm.fromCol];
         if (moving == nullptr) continue;
 
-        // בדוק אם היעד כבר נתפס
         bool destTaken = false;
         for (auto& t : taken)
             if (t.first == pm.toRow && t.second == pm.toCol) { destTaken = true; break; }
         if (destTaken) continue;
 
         Piece* target = state.board.grid[pm.toRow][pm.toCol];
-
-        if (target != nullptr && target->color == moving->color) continue; // ידידותי - מבטלים
+        if (target != nullptr && target->color == moving->color) continue;
 
         delete target;
         state.board.grid[pm.toRow][pm.toCol] = moving;
