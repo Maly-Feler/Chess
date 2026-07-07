@@ -61,6 +61,8 @@ static void applyPendingMoves(GameState& state) {
         if (isCancelled) continue;
         Piece* moving = state.board.grid[pm.fromRow][pm.fromCol];
         if (moving == nullptr) continue;
+        Color movingColor = moving->color;
+        char movingType = moving->type;
 
         bool destTaken = false;
         for (auto& t : taken)
@@ -68,7 +70,7 @@ static void applyPendingMoves(GameState& state) {
         if (destTaken) continue;
 
         Piece* target = state.board.grid[pm.toRow][pm.toCol];
-        if (target != nullptr && target->color == moving->color) continue;
+        if (target != nullptr && target->color == movingColor) continue;
 
         bool capturedKing = (target != nullptr && target->type == 'K');
         delete target;
@@ -78,7 +80,7 @@ static void applyPendingMoves(GameState& state) {
 
         if (capturedKing) {
             state.gameOver = true;
-            state.winner = (moving->color == Color::White) ? "white" : "black";
+            state.winner = (movingColor == Color::White) ? "white" : "black";
             state.pending.clear();
             state.selectedRow = -1;
             state.selectedCol = -1;
@@ -86,11 +88,10 @@ static void applyPendingMoves(GameState& state) {
         }
 
         // הפיכה לווזיר
-        int lastRow = (moving->color == Color::White) ? 0 : state.board.rows - 1;
-        if (moving->type == 'P' && pm.toRow == lastRow) {
-            Color c = moving->color;
+        int lastRow = (movingColor == Color::White) ? 0 : state.board.rows - 1;
+        if (movingType == 'P' && pm.toRow == lastRow) {
             delete state.board.grid[pm.toRow][pm.toCol];
-            state.board.grid[pm.toRow][pm.toCol] = new Queen(c);
+            state.board.grid[pm.toRow][pm.toCol] = new Queen(movingColor);
         }
     }
 
