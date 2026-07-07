@@ -9,15 +9,33 @@ static int moveDistance(int fromRow, int fromCol, int toRow, int toCol) {
 }
 
 static void applyPendingMoves(GameState& state) {
+    // מיין לפי זמן הגעה - מי שהגיע ראשון מנצח
+    std::sort(state.pending.begin(), state.pending.end(),
+        [](const PendingMove& a, const PendingMove& b) {
+            return a.arrivalTime < b.arrivalTime;
+        });
+
     std::vector<PendingMove> remaining;
     for (auto& pm : state.pending) {
-        if (state.clock >= pm.arrivalTime) {
-            delete state.board.grid[pm.toRow][pm.toCol];
-            state.board.grid[pm.toRow][pm.toCol] = state.board.grid[pm.fromRow][pm.fromCol];
-            state.board.grid[pm.fromRow][pm.fromCol] = nullptr;
-        } else {
+        if (state.clock < pm.arrivalTime) {
             remaining.push_back(pm);
+            continue;
         }
+
+        Piece* moving = state.board.grid[pm.fromRow][pm.fromCol];
+        Piece* target = state.board.grid[pm.toRow][pm.toCol];
+
+        if (moving == nullptr) continue; // כבר הוזז
+
+        if (target != nullptr && target->color == moving->color) {
+            // נחיתה על ידידותי - מבטלים
+            continue;
+        }
+
+        // אוכל אויב או תא ריק
+        delete target;
+        state.board.grid[pm.toRow][pm.toCol] = moving;
+        state.board.grid[pm.fromRow][pm.fromCol] = nullptr;
     }
     state.pending = remaining;
 }
@@ -57,10 +75,6 @@ static void handleClick(int x, int y, GameState& state) {
     }
 
     if (!selected->isValidMove(state.selectedRow, state.selectedCol, row, col, state.board.grid))
-        return;
-
-    // רק כלי אחד יכול לזוז בכל פעם
-    if (!state.pending.empty())
         return;
 
     int dist = moveDistance(state.selectedRow, state.selectedCol, row, col);
