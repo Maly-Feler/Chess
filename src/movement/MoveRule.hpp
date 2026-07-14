@@ -1,0 +1,9 @@
+#pragma once
+#include "../model/Board.hpp"
+
+class MoveRule {
+public:
+    virtual ~MoveRule() = default;
+    virtual bool canMove(int fromRow, int fromCol, int toRow, int toCol,
+                         const Board& board) const = 0;
+};
