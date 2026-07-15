@@ -2,7 +2,99 @@
 #include <algorithm>
 #include <iostream>
 
-RealTimeArbiter::RealTimeArbiter() {}
+RealTimeArbiter::RealTimeArbiter(const std::string& spritePath)
+    : spriteLoader(spritePath)
+{
+}
+
+PieceStatus RealTimeArbiter::getNextState(const Piece& piece,
+                                          PieceStatus currentState)
+{
+    std::string code = piece.toString();
+
+    return spriteLoader.configManager.getConfig(code, currentState).nextState;
+}
+
+void RealTimeArbiter::advanceClock(int ms, Board& board)
+{
+    currentClock += ms;
+
+    resolveArrivals(board);
+    pruneExpiredJumps(board);
+    pruneExpiredRests(board);
+}
+
+void RealTimeArbiter::pruneExpiredJumps(Board& board)
+{
+    std::vector<Jump> active;
+
+    for (auto& j : jumps)
+    {
+        if (currentClock <= j.endTime)
+        {
+            active.push_back(j);
+            continue;
+        }
+
+        Piece* piece = board.getPiece(j.row, j.col);
+
+        if (!piece)
+            continue;
+
+        PieceStatus next = getNextState(*piece, PieceStatus::Jump);
+
+        enqueueNextState(*piece, next, j.row, j.col, j.endTime - j.startTime);
+    }
+
+    jumps = active;
+}
+
+void RealTimeArbiter::pruneExpiredRests(Board& board)
+{
+    std::vector<Jump> activeShort;
+
+    for (auto& r : shortRests)
+    {
+        if (currentClock <= r.endTime)
+        {
+            activeShort.push_back(r);
+            continue;
+        }
+
+        Piece* piece = board.getPiece(r.row, r.col);
+
+        if (!piece)
+            continue;
+
+        PieceStatus next =  getNextState(*piece, PieceStatus::ShortReset);
+
+        enqueueNextState(*piece, next, r.row, r.col, r.endTime - r.startTime);
+    }
+
+    shortRests = activeShort;
+
+    std::vector<Jump> activeLong;
+
+    for (auto& r : longRests)
+    {
+        if (currentClock <= r.endTime)
+        {
+            activeLong.push_back(r);
+            continue;
+        }
+
+        Piece* piece = board.getPiece(r.row, r.col);
+
+        if (!piece)
+            continue;
+
+        PieceStatus next = getNextState(*piece, PieceStatus::LongReset);
+
+        enqueueNextState(*piece, next, r.row, r.col, r.endTime - r.startTime);
+    }
+
+    longRests = activeLong;
+}
 
 void RealTimeArbiter::setKingCapturedCallback(KingCapturedCallback cb) { onKingCaptured = cb; }
 
@@ -40,13 +132,6 @@ PieceStatus RealTimeArbiter::getStatus(int row, int col) const {
         if (r.row == row && r.col == col && currentClock < r.endTime)
             return PieceStatus::LongReset;
     return PieceStatus::Idle;
-}
-
-void RealTimeArbiter::advanceClock(int ms, Board& board) {
-    currentClock += ms;
-    resolveArrivals(board);
-    pruneExpiredJumps();
-    pruneExpiredRests();
 }
 
 void RealTimeArbiter::resolveArrivals(Board& board) {
@@ -142,21 +227,32 @@ void RealTimeArbiter::applyArrivals(std::vector<Motion>& ready, std::vector<bool
     }
 }
 
-void RealTimeArbiter::pruneExpiredJumps() {
-    std::vector<Jump> active;
-    for (auto& j : jumps)
-        if (currentClock <= j.endTime) active.push_back(j);
-    jumps = active;
-}
+void RealTimeArbiter::enqueueNextState(const Piece& piece,  PieceStatus nextState,
+                                       int row, int col, int duration)
+{
+    switch (nextState)
+    {
+        case PieceStatus::Move:
+            motions.push_back({row, col, row, col, currentClock, 
+                currentClock + duration, counter++});
+            break;
 
-void RealTimeArbiter::pruneExpiredRests() {
-    std::vector<Jump> activeShort;
-    for (auto& r : shortRests)
-        if (currentClock <= r.endTime) activeShort.push_back(r);
-    shortRests = activeShort;
+        case PieceStatus::Jump:
+            jumps.push_back({row, col, currentClock, currentClock + duration,
+                counter++});
+            break;
 
-    std::vector<Jump> activeLong;
-    for (auto& r : longRests)
-        if (currentClock <= r.endTime) activeLong.push_back(r);
-    longRests = activeLong;
+        case PieceStatus::ShortReset:
+            shortRests.push_back({row, col, currentClock,
+                                  currentClock + duration, counter++});
+            break;
+
+        case PieceStatus::LongReset:
+            longRests.push_back({row, col, currentClock, currentClock + duration,
+                                 counter++});
+            break;
+
+        case PieceStatus::Idle:
+            break;
+    }
 }

@@ -1,6 +1,6 @@
 #pragma once
 #include "SpriteAnimator.hpp"
-#include "SpriteLoader.hpp"
+#include "../config/SpriteLoader.hpp"
 #include "GameSnapshot.hpp"
 #include "../../cpp/src/img.hpp"
 #include <map>

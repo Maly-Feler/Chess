@@ -1,6 +1,5 @@
 #include "GameEngine.hpp"
 #include "../text_io/BoardPrinter.hpp"
-#include "../arbiter/Motion.hpp"
 #include <cmath>
 #include <sstream>
 
@@ -19,12 +18,13 @@ static std::pair<int,int> parseXY(const std::string& s) {
 }
 
 GameEngine::GameEngine()
-    : spriteLoader("assets/pieces2")
+    : spriteLoader("assets/pieces2"),
+          arbiter("assets/pieces2")
 {
         arbiter.setKingCapturedCallback([this](Color w) {
         gameOver = true;
         winner = (w == Color::White) ? "white" : "black";
-        arbiter = RealTimeArbiter();
+        arbiter = RealTimeArbiter("assets/pieces2");
     });
 }
 
@@ -48,9 +48,9 @@ void GameEngine::requestMove(CellPos from, CellPos to) {
     Piece* piece = board.getPiece(from.row, from.col);
     if (!piece) return;
 
-    std::string code = pieceCode(*board.getPiece(from.row, from.col));
+    std::string code = board.getPiece(from.row, from.col)->toString();
     
-    const AnimConfig& cfg = spriteLoader.getConfig(code, PieceStatus::Move);
+    const AnimConfig& cfg = spriteLoader.configManager.getConfig(code, PieceStatus::Move);
 
     double speed = cfg.speed_m_per_sec;
 
@@ -69,9 +69,9 @@ void GameEngine::requestJump(CellPos pos) {
     if (!pos.valid || board.getPiece(pos.row, pos.col) == nullptr) return;
     if (arbiter.getStatus(pos.row, pos.col) != PieceStatus::Idle) return;
     
-    std::string code = pieceCode(*board.getPiece(pos.row, pos.col));
+    std::string code = board.getPiece(pos.row, pos.col)->toString();
 
-    const AnimConfig& cfg = spriteLoader.getConfig(code, PieceStatus::Jump);
+    const AnimConfig& cfg = spriteLoader.configManager.getConfig(code, PieceStatus::Jump);
 
     double speed = cfg.speed_m_per_sec;
 
@@ -137,11 +137,4 @@ GameSnapshot GameEngine::snapshot() const {
             };
         }
     return snap;
-}
-
-std::string GameEngine::pieceCode(const Piece& p) {
-    std::string code;
-    code += (p.color == Color::White) ? 'w' : 'b';
-    code += p.type;
-    return code;
 }

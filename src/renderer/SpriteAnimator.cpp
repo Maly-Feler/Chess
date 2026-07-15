@@ -7,7 +7,7 @@ SpriteAnimator::SpriteAnimator(const std::string& pieceCode, SpriteLoader& loade
 }
 
 void SpriteAnimator::tick(int dt) {
-    const AnimConfig& cfg = loader.getConfig(pieceCode, state);
+    const AnimConfig& cfg = loader.configManager.getConfig(pieceCode, state);
     msAccum += dt;
     int msPerFrame = (cfg.fps > 0) ? (1000 / cfg.fps) : 1000;
 

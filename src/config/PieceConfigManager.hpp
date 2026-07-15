@@ -1,6 +1,6 @@
 #pragma once
-
-#include "PieceConfig.hpp"
+#include "../arbiter/Motion.hpp"
+#include "AnimConfig.hpp"
 #include <string>
 #include <map>
 
@@ -9,7 +9,10 @@ public:
     explicit PieceConfigManager(const std::string& basePath);
 
     const AnimConfig& getConfig(const std::string& pieceCode,
-                                const std::string& state);
+                                const PieceStatus& state);
+
+    AnimConfig parseConfig(const std::string& configPath);
+    
 
 private:
     std::string basePath;
@@ -17,7 +20,5 @@ private:
     std::map<std::string, AnimConfig> cache;
 
     AnimConfig loadConfig(const std::string& pieceCode,
-                          const std::string& state);
-
-    AnimConfig parseConfig(const std::string& configPath);
+                          const PieceStatus& state);
 };

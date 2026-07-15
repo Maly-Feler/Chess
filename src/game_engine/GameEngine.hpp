@@ -1,11 +1,13 @@
 #pragma once
 #include "../model/Board.hpp"
 #include "../rule_engine/RuleEngine.hpp"
+#include "../arbiter/Motion.hpp"
 #include "../arbiter/RealTimeArbiter.hpp"
 #include "../controllerClick/controllerClick.hpp"
 #include "../controllerClick/BoardMapper.hpp"
 #include "../renderer/GameSnapshot.hpp"
-#include "../renderer/SpriteLoader.hpp"
+#include "../config/SpriteLoader.hpp"
+#include "../config/AnimConfig.hpp"
 #include "CommandType.hpp"
 #include <string>
 
@@ -27,8 +29,6 @@ public:
     BoardMapper mapper;
 
 private:
-
-    std::string pieceCode(const Piece& p);
 
     RuleEngine ruleEngine;
     RealTimeArbiter arbiter;

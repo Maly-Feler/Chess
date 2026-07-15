@@ -2,7 +2,7 @@
 #include "../../cpp/src/img.hpp"
 #include "GameSnapshot.hpp"
 #include "AnimatorPool.hpp"
-#include "SpriteLoader.hpp"
+#include "../config/SpriteLoader.hpp"
 #include "../controllerClick/CellPos.hpp"
 #include "../Constants.hpp"
 #include <functional>
