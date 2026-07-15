@@ -113,7 +113,12 @@ void RealTimeArbiter::applyArrivals(std::vector<Motion>& ready, std::vector<bool
         bool kingCaptured = (target && target->type == KING_TYPE);
         Color movingColor = moving->color;
 
-        board.movePiece(m.fromRow, m.fromCol, m.toRow, m.toCol, moving->color);
+        board.movePiece(m.fromRow, m.fromCol, m.toRow, m.toCol);
+
+        int lastRow = (movingColor == Color::White) ? 0 : board.rows - 1;
+        if (m.toRow == lastRow)
+            board.promotePiece(m.toRow, m.toCol);
+
 
         if (kingCaptured && onKingCaptured) { onKingCaptured(movingColor); return; }
 
