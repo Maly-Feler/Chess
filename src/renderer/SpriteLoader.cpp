@@ -75,9 +75,29 @@ AnimConfig SpriteLoader::parseConfig(const std::string& configPath) {
         while (pos < content.size() && content[pos] == ' ') ++pos;
         return content.substr(pos, 4) == "true";
     };
+    auto extractDouble = [&](const std::string& key) -> double {
+        auto pos = content.find("\"" + key + "\"");
+        if (pos == std::string::npos) return 0;
+        
+        pos = content.find(":", pos) + 1;
+        
+        while (pos < content.size() &&
+               (content[pos] == ' ' || content[pos] == '\t'))
+            ++pos;
+        
+        size_t end = pos;
+        while (end < content.size() &&
+               (isdigit(content[end]) || content[end] == '.'))
+            ++end;
+        
+        return std::stod(content.substr(pos, end - pos));
+    };
 
     cfg.fps       = extractInt("frames_per_sec");
     cfg.isLoop    = extractBool("is_loop");
     cfg.nextState = extractStr("next_state_when_finished");
+    cfg.speed_m_per_sec = extractDouble("speed_m_per_sec");
+    cfg.duration_ms = extractInt("duration_ms");
+    cfg.wait_ms = extractInt("wait_ms");
     return cfg;
 }

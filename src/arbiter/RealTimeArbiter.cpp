@@ -1,8 +1,8 @@
 #include "RealTimeArbiter.hpp"
 #include <algorithm>
+#include <iostream>
 
-RealTimeArbiter::RealTimeArbiter(const GameConfig& config)
-    : config(config) {}
+RealTimeArbiter::RealTimeArbiter() {}
 
 void RealTimeArbiter::setKingCapturedCallback(KingCapturedCallback cb) { onKingCaptured = cb; }
 
@@ -11,7 +11,7 @@ int RealTimeArbiter::clock() const { return currentClock; }
 
 void RealTimeArbiter::startMotion( int fromRow, int fromCol, int toRow, int toCol, int dist) {
     motions.push_back({ fromRow, fromCol, toRow, toCol,
-        currentClock, currentClock + dist * config.msPerCell, counter++});
+        currentClock, currentClock + dist, counter++});
 }
 
 void RealTimeArbiter::startJump(int row, int col) {

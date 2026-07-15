@@ -18,12 +18,12 @@ static std::pair<int,int> parseXY(const std::string& s) {
 }
 
 GameEngine::GameEngine()
-    : arbiter(config)
+    : spriteLoader("assets/pieces2")
 {
-    arbiter.setKingCapturedCallback([this](Color w) {
+        arbiter.setKingCapturedCallback([this](Color w) {
         gameOver = true;
         winner = (w == Color::White) ? "white" : "black";
-        arbiter = RealTimeArbiter(config);
+        arbiter = RealTimeArbiter();
     });
 }
 
@@ -44,8 +44,26 @@ void GameEngine::requestMove(CellPos from, CellPos to) {
     if (gameOver) return;
     RuleResult rule = ruleEngine.validate(from.row, from.col, to.row, to.col, board);
     if (rule != RuleResult::Ok) return;
+    
+    Piece* piece = board.getPiece(from.row, from.col);
+    if (!piece) return;
+
+    std::string code;
+    code += piece->type;
+    code += (piece->color == Color::White) ? 'W' : 'B';
+
+    const AnimConfig& cfg = spriteLoader.getConfig(code, "move");
+
+    double speed = cfg.speed_m_per_sec;
+
+    if (speed <= 0)
+        return;
+
     int dist = std::max(std::abs(to.row - from.row), std::abs(to.col - from.col));
-    arbiter.startMotion(from.row, from.col, to.row, to.col, dist);
+
+    int duration = static_cast<int>((dist * speed) * 1000);
+
+    arbiter.startMotion( from.row, from.col, to.row, to.col, duration);
 }
 
 void GameEngine::requestJump(CellPos pos) {

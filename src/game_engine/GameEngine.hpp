@@ -1,11 +1,11 @@
 #pragma once
-#include "../config/GameConfig.hpp"
 #include "../model/Board.hpp"
 #include "../rule_engine/RuleEngine.hpp"
 #include "../arbiter/RealTimeArbiter.hpp"
 #include "../controllerClick/controllerClick.hpp"
 #include "../controllerClick/BoardMapper.hpp"
 #include "../renderer/GameSnapshot.hpp"
+#include "../renderer/SpriteLoader.hpp"
 #include "CommandType.hpp"
 #include <string>
 
@@ -28,8 +28,8 @@ public:
 
 private:
 
-    GameConfig config;
     RuleEngine ruleEngine;
     RealTimeArbiter arbiter;
     controllerClick controller;
+    SpriteLoader spriteLoader;
 };

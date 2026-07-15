@@ -2,7 +2,8 @@
 #include <string>
 
 struct AnimConfig {
-    int fps = 6;
+    int fps = 0;
     bool isLoop = true;
-    std::string nextState = "idle";
+    std::string nextState;
+    double speed_m_per_sec = 0;
 };

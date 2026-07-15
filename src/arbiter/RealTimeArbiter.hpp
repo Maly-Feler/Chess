@@ -1,14 +1,14 @@
 #pragma once
 #include "Motion.hpp"
 #include "../model/Board.hpp"
-#include "../config/GameConfig.hpp"
+#include "../Constants.hpp"
 #include <vector>
 #include <functional>
 
 class RealTimeArbiter {
 public:
 
-    explicit RealTimeArbiter(const GameConfig& config);
+    explicit RealTimeArbiter();
 
     using KingCapturedCallback = std::function<void(Color winner)>;
 
@@ -32,6 +32,4 @@ private:
     void resolveJumpCaptures(std::vector<Motion>& ready, std::vector<bool>& cancelled, Board& board);
     void applyArrivals(std::vector<Motion>& ready, std::vector<bool>& cancelled, Board& board);
     void pruneExpiredJumps();
-
-    GameConfig config;
 };
