@@ -1,4 +1,5 @@
 #pragma once
+#include "../config/GameConfig.hpp"
 #include "../model/Board.hpp"
 #include "../rule_engine/RuleEngine.hpp"
 #include "../arbiter/RealTimeArbiter.hpp"
@@ -26,6 +27,8 @@ public:
     BoardMapper mapper;
 
 private:
+
+    GameConfig config;
     RuleEngine ruleEngine;
     RealTimeArbiter arbiter;
     controllerClick controller;

@@ -17,11 +17,13 @@ static std::pair<int,int> parseXY(const std::string& s) {
     return {x, y};
 }
 
-GameEngine::GameEngine() {
+GameEngine::GameEngine()
+    : arbiter(config)
+{
     arbiter.setKingCapturedCallback([this](Color w) {
         gameOver = true;
         winner = (w == Color::White) ? "white" : "black";
-        arbiter = RealTimeArbiter();
+        arbiter = RealTimeArbiter(config);
     });
 }
 

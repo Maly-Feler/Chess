@@ -1,17 +1,21 @@
 #include "RealTimeArbiter.hpp"
 #include <algorithm>
 
+RealTimeArbiter::RealTimeArbiter(const GameConfig& config)
+    : config(config) {}
+
 void RealTimeArbiter::setKingCapturedCallback(KingCapturedCallback cb) { onKingCaptured = cb; }
 
 int RealTimeArbiter::clock() const { return currentClock; }
 
-void RealTimeArbiter::startMotion(int fromRow, int fromCol, int toRow, int toCol, int dist) {
-    motions.push_back({fromRow, fromCol, toRow, toCol,
-                       currentClock, currentClock + dist * MS_PER_CELL, counter++});
+
+void RealTimeArbiter::startMotion( int fromRow, int fromCol, int toRow, int toCol, int dist) {
+    motions.push_back({ fromRow, fromCol, toRow, toCol,
+        currentClock, currentClock + dist * config.msPerCell, counter++});
 }
 
 void RealTimeArbiter::startJump(int row, int col) {
-    jumps.push_back({row, col, currentClock, currentClock + JUMP_DURATION, counter++});
+    jumps.push_back({row, col, currentClock, currentClock + config.jumpDuration, counter++});
 }
 
 bool RealTimeArbiter::isMoving(int row, int col) const {
@@ -122,9 +126,6 @@ void RealTimeArbiter::applyArrivals(std::vector<Motion>& ready, std::vector<bool
 
         if (kingCaptured && onKingCaptured) { onKingCaptured(movingColor); return; }
 
-        int lastRow = (movingColor == Color::White) ? 0 : board.rows - 1;
-        if (m.toRow == lastRow)
-            board.promotePiece(m.toRow, m.toCol);
     }
 }
 
