@@ -2,10 +2,11 @@
 #include "CellPos.hpp"
 #include "ClickResult.hpp"
 #include "../model/Board.hpp"
+#include "../arbiter/Motion.hpp"
 
 class controllerClick {
 public:
-    ClickResult onClick(CellPos pos, const Board& board, bool isMoving, bool isJumping);
+    ClickResult onClick(CellPos pos, const Board& board, PieceStatus status);
     bool hasSelection() const;
     void clearSelection();
 

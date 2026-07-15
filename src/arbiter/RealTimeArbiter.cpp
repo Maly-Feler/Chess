@@ -18,16 +18,14 @@ void RealTimeArbiter::startJump(int row, int col, int speed) {
     jumps.push_back({row, col, currentClock, currentClock + speed, counter++});
 }
 
-bool RealTimeArbiter::isMoving(int row, int col) const {
+PieceStatus RealTimeArbiter::getStatus(int row, int col) const {
     for (auto& m : motions)
-        if ((m.fromRow == row && m.fromCol == col) || (m.toRow == row && m.toCol == col)) return true;
-    return false;
-}
-
-bool RealTimeArbiter::isJumping(int row, int col) const {
+        if ((m.fromRow == row && m.fromCol == col) || (m.toRow == row && m.toCol == col))
+            return PieceStatus::Move;
     for (auto& j : jumps)
-        if (j.row == row && j.col == col && currentClock < j.endTime) return true;
-    return false;
+        if (j.row == row && j.col == col && currentClock < j.endTime)
+            return PieceStatus::Jump;
+    return PieceStatus::Idle;
 }
 
 void RealTimeArbiter::advanceClock(int ms, Board& board) {

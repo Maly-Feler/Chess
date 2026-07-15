@@ -29,9 +29,8 @@ GameEngine::GameEngine()
 
 void GameEngine::handleClick(CellPos pos) {
     if (gameOver) return;
-    bool moving  = pos.valid && arbiter.isMoving(pos.row, pos.col);
-    bool jumping = pos.valid && arbiter.isJumping(pos.row, pos.col);
-    ClickResult result = controller.onClick(pos, board, moving, jumping);
+    PieceStatus status = pos.valid ? arbiter.getStatus(pos.row, pos.col) : PieceStatus::Idle;
+    ClickResult result = controller.onClick(pos, board, status);
 
     if (result.action == ClickAction::MoveRequest)
         requestMove(result.from, result.to);
@@ -67,8 +66,7 @@ void GameEngine::requestMove(CellPos from, CellPos to) {
 void GameEngine::requestJump(CellPos pos) {
     if (gameOver) return;
     if (!pos.valid || board.getPiece(pos.row, pos.col) == nullptr) return;
-    if (arbiter.isMoving(pos.row, pos.col)) return;
-    if (arbiter.isJumping(pos.row, pos.col)) return;
+    if (arbiter.getStatus(pos.row, pos.col) != PieceStatus::Idle) return;
     
     std::string code = pieceCode(*board.getPiece(pos.row, pos.col));
 
@@ -134,8 +132,7 @@ GameSnapshot GameEngine::snapshot() const {
                 p->id,
                 p->type,
                 p->color,
-                arbiter.isMoving(r,c),
-                arbiter.isJumping(r,c)
+                arbiter.getStatus(r, c)
             };
         }
     return snap;

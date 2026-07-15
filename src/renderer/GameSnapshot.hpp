@@ -1,5 +1,6 @@
 #pragma once
 #include "../model/Piece.hpp"
+#include "../arbiter/Motion.hpp"
 #include <vector>
 #include <string>
 
@@ -7,8 +8,7 @@ struct CellSnapshot {
     int id = -1;
     char type = 0;
     Color color;
-    bool isMoving = false;
-    bool isJumping = false;
+    PieceStatus status = PieceStatus::Idle;
 };
 struct GameSnapshot {
     int rows = 0;

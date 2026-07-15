@@ -1,6 +1,6 @@
 #include "controllerClick.hpp"
 
-ClickResult controllerClick::onClick(CellPos pos, const Board& board, bool isMoving, bool isJumping) {
+ClickResult controllerClick::onClick(CellPos pos, const Board& board, PieceStatus status) {
     if (!pos.valid) {
         if (hasSelection()) clearSelection();
         return {ClickAction::None};
@@ -9,14 +9,14 @@ ClickResult controllerClick::onClick(CellPos pos, const Board& board, bool isMov
     const Piece* piece = board.grid[pos.row][pos.col].get();
 
     if (!hasSelection()) {
-        if (piece == nullptr || isMoving) return {ClickAction::None};
+        if (piece == nullptr || status == PieceStatus::Move) return {ClickAction::None};
         selectedRow = pos.row;
         selectedCol = pos.col;
         return {ClickAction::Selected, pos, pos};
     }
 
     if (pos.row == selectedRow && pos.col == selectedCol) {
-        if (isMoving || isJumping) return {ClickAction::None};
+        if (status == PieceStatus::Move || status == PieceStatus::Jump) return {ClickAction::None};
         CellPos sel = {selectedRow, selectedCol, true};
         clearSelection();
         return {ClickAction::JumpRequest, sel, sel};
