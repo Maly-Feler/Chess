@@ -27,14 +27,14 @@ public:
 private:
     static constexpr const char* WINDOW_NAME = "Kung-Fu Chess";
 
-    SpriteLoader  loader;
-    AnimatorPool  pool;
-    Img           boardImg;
-    int           rows, cols;
+    SpriteLoader loader;
+    AnimatorPool pool;
+    Img boardImg;
+    int rows, cols;
 
     ClickCallback onClick;
-    WaitCallback  onWait;
-    SnapCallback  getSnap;
+    WaitCallback onWait;
+    SnapCallback getSnap;
 
     Img  buildFrame(const GameSnapshot& snap);
     void drawUI(Img& canvas, const GameSnapshot& snap);

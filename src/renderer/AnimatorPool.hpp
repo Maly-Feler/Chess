@@ -6,15 +6,12 @@
 #include <map>
 #include <string>
 
-// Owns all SpriteAnimators, syncs them with GameSnapshot, draws them
 class AnimatorPool {
 public:
     explicit AnimatorPool(SpriteLoader& loader);
 
-    // Sync animators with snapshot + advance by dt ms
     void update(const GameSnapshot& snap, int dt);
 
-    // Draw all pieces onto canvas
     void drawAll(Img& canvas, const GameSnapshot& snap);
 
 private:

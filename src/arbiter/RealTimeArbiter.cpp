@@ -68,7 +68,7 @@ void RealTimeArbiter::pruneExpiredRests(Board& board)
 
         PieceStatus next =  getNextState(*piece, PieceStatus::ShortReset);
 
-        enqueueNextState(*piece, next, r.row, r.col, r.endTime - r.startTime);
+        enqueueNextState(*piece, next, r.row, r.col, SHORT_REST_DURATION);
     }
 
     shortRests = activeShort;
@@ -90,7 +90,7 @@ void RealTimeArbiter::pruneExpiredRests(Board& board)
 
         PieceStatus next = getNextState(*piece, PieceStatus::LongReset);
 
-        enqueueNextState(*piece, next, r.row, r.col, r.endTime - r.startTime);
+        enqueueNextState(*piece, next, r.row, r.col, LONG_REST_DURATION);
     }
 
     longRests = activeLong;

@@ -21,6 +21,7 @@ std::cout << "onClick: selected=" << selectedCol << "," << selectedRow << std::e
     }
 
     if (pos.row == selectedRow && pos.col == selectedCol) {
+        std::cout << "onClick: jump pos=" << pos.row << "," << pos.col << " status=" << PieceStatusToString(status) << std::endl;
         if (status == PieceStatus::Move || status == PieceStatus::Jump || 
             status == PieceStatus::ShortReset || status == PieceStatus::LongReset)
             return {ClickAction::None};

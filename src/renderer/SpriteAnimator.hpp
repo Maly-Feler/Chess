@@ -6,8 +6,8 @@ class SpriteAnimator {
 public:
     SpriteAnimator(const std::string& pieceCode, SpriteLoader& loader);
 
-    void tick(int dt);                          // advance animation by dt ms
-    void setState(const PieceStatus& newState); // called by renderer from snapshot
+    void tick(int dt);
+    void setState(const PieceStatus& newState);
     const PieceStatus& getState() const;
     const Img& currentImg() const;
 

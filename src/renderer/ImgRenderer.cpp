@@ -35,7 +35,6 @@ void ImgRenderer::run() {
     Img::destroy_windows();
 }
 
-// ── Frame building ────────────────────────────────────────────────────────────
 
 Img ImgRenderer::buildFrame(const GameSnapshot& snap) {
     Img canvas = boardImg;
@@ -65,7 +64,6 @@ void ImgRenderer::drawGameOver(Img& canvas, const GameSnapshot& snap) {
                     2.0);
 }
 
-// ── Input ─────────────────────────────────────────────────────────────────────
 
 CellPos ImgRenderer::pixelToCell(int x, int y) const {
     int col = x / CELL_SIZE_PX;
@@ -75,7 +73,7 @@ CellPos ImgRenderer::pixelToCell(int x, int y) const {
 }
 
 void ImgRenderer::mouseHandler(int event, int x, int y, int, void* userdata) {
-    if (event != 1) return;  // EVENT_LBUTTONDOWN
+    if (event != 1) return;
     auto* self = static_cast<ImgRenderer*>(userdata);
     if (!self->onClick) return;
     self->onClick(self->pixelToCell(x, y));
