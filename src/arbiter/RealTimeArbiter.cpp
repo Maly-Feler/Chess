@@ -2,12 +2,10 @@
 
 #include <iostream>
 
-RealTimeArbiter::RealTimeArbiter(const std::string &spritePath) : spriteLoader(spritePath) {}
-
 PieceStatus RealTimeArbiter::getNextState(const Piece &piece, PieceStatus currentState)
 {
     std::string code = piece.toString();
-    return spriteLoader.configManager.getConfig(code, currentState).nextState;
+    return animationConfig.getConfig(code, currentState).nextState;
 }
 
 std::pair<int, int> RealTimeArbiter::advanceClock(int ms, Board &board)

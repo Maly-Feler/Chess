@@ -13,13 +13,17 @@ public:
 
     explicit SpriteLoader(const std::string& basePath);
 
-    PieceConfigManager configManager;
 
     const std::vector<Img>& getFrames(const std::string& pieceCode,
                                       const PieceStatus& state);
+    const AnimConfig& getConfig(const std::string& pieceCode,
+                                const PieceStatus& state);
+
 
 private:
     std::string basePath;
+
+    PieceConfigManager configManager;
 
     struct Entry {
         std::vector<Img> frames;

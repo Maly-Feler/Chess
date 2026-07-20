@@ -35,3 +35,9 @@ SpriteLoader::Entry SpriteLoader::load(const std::string& pieceCode,
     }
     return entry;
 }
+
+const AnimConfig& SpriteLoader::getConfig(const std::string& pieceCode,
+                                const PieceStatus& state)
+{
+    return configManager.getConfig(pieceCode, state);
+}

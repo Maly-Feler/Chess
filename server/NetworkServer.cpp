@@ -2,7 +2,7 @@
 
 #include <iostream>
 
-NetworkServer::NetworkServer(int port, CommandExecutor& executor) : websocketServer(port, executor) {}
+NetworkServer::NetworkServer(int port, GameEngine engine, CommandExecutor& executor) : websocketServer(port, engine, executor) {}
 
 void NetworkServer::start()
 {

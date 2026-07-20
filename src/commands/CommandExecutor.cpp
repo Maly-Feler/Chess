@@ -1,7 +1,7 @@
 #include "CommandExecutor.hpp"
+#include <sstream>
 
 CommandExecutor::CommandExecutor(GameEngine &engine) : engine(engine) {}
-
 
 CommandType CommandExecutor::parseCommandType(const std::string& cmd) {
     if (cmd == "print board")        return CommandType::PrintBoard;

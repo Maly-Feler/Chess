@@ -1,8 +1,9 @@
-#include "src/game_engine/GameEngine.hpp"
-#include "src/renderer/ImgRenderer.hpp"
-#include "server/NetworkServer.hpp"
+// #include "src/game_engine/GameEngine.hpp"
+// #include "server/NetworkServer.hpp"
+// #include "src/commands/CommandExecutor.hpp"
 #include "src/network/NetworkClient.hpp"
-#include "src/commands/CommandExecutor.hpp"
+#include "src/renderer/ImgRenderer.hpp"
+#include "Board.hpp"
 #include <thread>
 #include <iostream>
 
@@ -10,25 +11,25 @@ int main()
 {
     try
     {
-        GameEngine engine;
+        // GameEngine engine;
 
-        engine.loadBoard("board.txt");
+        // engine.loadBoard("board.txt");
 
         ImgRenderer renderer(
             "assets/pieces2",
             "assets/board.png",
-            engine.rows(),
-            engine.cols());
+            ROW,
+            COL);
 
-        CommandExecutor executor(engine);
+        // CommandExecutor executor(engine);
 
-        NetworkServer server(8080, executor);
+        // NetworkServer server(8080, executor);
 
-        std::thread serverThread(
-            [&]()
-            {
-                server.start();
-            });
+        // std::thread serverThread(
+        //     [&]()
+        //     {
+        //         server.start();
+        //     });
 
         // renderer.setCommandCallback(
         //     [&](const std::string &cmd)
@@ -48,10 +49,16 @@ int main()
                 client.sendCommand(cmd);
             });
 
+        // renderer.setSnapCallback(
+        //     [&]()
+        //     {
+        //         return engine.snapshot();
+        //     });
+
         renderer.setSnapCallback(
             [&]()
             {
-                return engine.snapshot();
+                return client.getLatestSnapshot();
             });
 
         renderer.run();

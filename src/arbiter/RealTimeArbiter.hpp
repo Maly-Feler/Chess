@@ -4,8 +4,8 @@
 #include "MotionUpdater.hpp"
 #include "../game_engine/PieceStatus.hpp"
 #include "../model/Board.hpp"
-#include "../config/SpriteLoader.hpp"
 #include "../movement/PathBuilder.hpp"
+#include "../config/AnimationConfigProvider.hpp"
 #include "../Constants.hpp"
 #include <vector>
 #include <functional>
@@ -14,8 +14,6 @@
 class RealTimeArbiter
 {
 public:
-
-    explicit RealTimeArbiter(const std::string& spritePath);
 
     using KingCapturedCallback = std::function<void(Color winner)>;
 
@@ -49,6 +47,6 @@ private:
     std::vector<Jump> longRests;
 
     KingCapturedCallback onKingCaptured;
-    SpriteLoader spriteLoader;
+    AnimationConfigProvider animationConfig;
     MotionUpdater motionUpdater;
 };

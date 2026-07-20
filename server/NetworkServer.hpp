@@ -8,7 +8,7 @@ class NetworkServer
 {
 public:
 
-    NetworkServer(int port,CommandExecutor& executor);
+    NetworkServer(int port, GameEngine engine, CommandExecutor& executor);
     void start();
 
 

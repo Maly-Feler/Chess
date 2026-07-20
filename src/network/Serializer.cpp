@@ -76,4 +76,101 @@ namespace Network
         return message;
     }
 
+    std::string Serializer::serializeSnapshot(const GameSnapshot &snapshot)
+    {
+        nlohmann::json json;
+
+        json["rows"] = snapshot.rows;
+        json["cols"] = snapshot.cols;
+
+        json["gameOver"] = snapshot.gameOver;
+        json["winner"] = snapshot.winner;
+
+        json["selectedRow"] = snapshot.selectedRow;
+        json["selectedCol"] = snapshot.selectedCol;
+
+        json["playerWhite"] = snapshot.playerWhite;
+        json["playerBlack"] = snapshot.playerBlack;
+
+        json["scoreWhite"] = snapshot.scoreWhite;
+        json["scoreBlack"] = snapshot.scoreBlack;
+
+        json["movesLogWhite"] = snapshot.movesLogWhite;
+        json["movesLogBlack"] = snapshot.movesLogBlack;
+
+        // cells
+        for (const auto &row : snapshot.cells)
+        {
+            nlohmann::json jsonRow;
+
+            for (const auto &cell : row)
+            {
+                jsonRow.push_back({{"id", cell.id},
+                                   {"type", cell.type},
+                                   {"color", static_cast<int>(cell.color)},
+                                   {"status", static_cast<int>(cell.status)}});
+            }
+
+            json["cells"].push_back(jsonRow);
+        }
+
+        return json.dump();
+    }
+
+    GameSnapshot Serializer::deserializeSnapshot(const std::string &data)
+    {
+        auto json = nlohmann::json::parse(data);
+
+        GameSnapshot snapshot;
+
+        snapshot.rows = json.at("rows").get<int>();
+        snapshot.cols = json.at("cols").get<int>();
+
+        snapshot.gameOver = json.at("gameOver").get<bool>();
+        snapshot.winner = json.at("winner").get<std::string>();
+
+        snapshot.selectedRow = json.at("selectedRow").get<int>();
+        snapshot.selectedCol = json.at("selectedCol").get<int>();
+
+        snapshot.playerWhite = json.at("playerWhite").get<std::string>();
+        snapshot.playerBlack = json.at("playerBlack").get<std::string>();
+
+        snapshot.scoreWhite = json.at("scoreWhite").get<int>();
+        snapshot.scoreBlack = json.at("scoreBlack").get<int>();
+
+        snapshot.movesLogWhite =
+            json.at("movesLogWhite").get<std::vector<std::string>>();
+
+        snapshot.movesLogBlack =
+            json.at("movesLogBlack").get<std::vector<std::string>>();
+
+        snapshot.cells.resize(snapshot.rows);
+
+        const auto &jsonCells = json.at("cells");
+
+        for (int r = 0; r < snapshot.rows; ++r)
+        {
+            snapshot.cells[r].resize(snapshot.cols);
+
+            for (int c = 0; c < snapshot.cols; ++c)
+            {
+                const auto &jCell = jsonCells[r][c];
+
+                CellSnapshot cell;
+
+                cell.id = jCell.at("id").get<int>();
+                cell.type = jCell.at("type").get<char>();
+
+                cell.color =
+                    static_cast<Color>(jCell.at("color").get<int>());
+
+                cell.status =
+                    static_cast<PieceStatus>(jCell.at("status").get<int>());
+
+                snapshot.cells[r][c] = cell;
+            }
+        }
+
+        return snapshot;
+    }
 }

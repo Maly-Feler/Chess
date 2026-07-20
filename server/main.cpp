@@ -1,27 +1,17 @@
-#include "GameEngine.hpp"
-#include "NetworkServer.hpp"
-
+#include "../src/game_engine/GameEngine.hpp"
+#include "../src/commands/CommandExecutor.hpp"
+#include "WebSocketServer.hpp"
 
 int main()
 {
-    NetworkServer server(8080);
-
     GameEngine engine;
-
     engine.loadBoard("board.txt");
 
+    CommandExecutor executor(engine);
+
+    WebSocketServer server(8080, engine, executor);
 
     server.start();
-
-
-    while(true)
-    {
-        engine.update();
-
-        auto snapshot = engine.snapshot();
-
-        server.broadcast(snapshot);
-    }
 
     return 0;
 }

@@ -1,6 +1,6 @@
 #pragma once
 #include "../../cpp/src/img.hpp"
-#include "GameSnapshot.hpp"
+#include "./game_engine/GameSnapshot.hpp"
 #include "AnimatorPool.hpp"
 #include "../config/SpriteLoader.hpp"
 #include "../controllerClick/CellPos.hpp"

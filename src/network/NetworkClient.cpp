@@ -22,6 +22,30 @@ NetworkClient::NetworkClient()
                 << "WebSocket client connected"
                 << std::endl;
         });
+
+    client.set_message_handler(
+        [&](websocketpp::connection_hdl,
+            Client::message_ptr msg)
+        {
+            std::cout
+                << "CLIENT RECEIVED LENGTH: "
+                << msg->get_payload().size()
+                << std::endl;
+
+            std::cout
+                << "CLIENT RECEIVED:"
+                << msg->get_payload()
+                << std::endl;
+
+            latestSnapshot = Network::Serializer::deserializeSnapshot(msg->get_payload());
+
+            std::cout
+                << "CLIENT SNAPSHOT: "
+                << latestSnapshot.rows
+                << " "
+                << latestSnapshot.cols
+                << std::endl;
+        });
 }
 
 void NetworkClient::connect(
@@ -65,4 +89,9 @@ void NetworkClient::sendCommand(const std::string &command)
     std::string json = Network::Serializer::serialize(message);
 
     client.send(connection, json, websocketpp::frame::opcode::text);
+}
+
+GameSnapshot NetworkClient::getLatestSnapshot()
+{
+    return latestSnapshot;
 }

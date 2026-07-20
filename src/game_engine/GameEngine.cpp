@@ -17,14 +17,11 @@
 //     return {x, y};
 // }
 
-GameEngine::GameEngine()
-    : spriteLoader("assets/pieces2"),
-      arbiter("assets/pieces2")
-{
+GameEngine::GameEngine() {
     arbiter.setKingCapturedCallback([this](Color w) {
         gameOver = true;
         winner = (w == Color::Black) ? "white" : "black";
-        arbiter = RealTimeArbiter("assets/pieces2");
+        arbiter = RealTimeArbiter();
     });
 }
 
@@ -61,7 +58,7 @@ void GameEngine::requestMove(CellPos from, CellPos to) {
     if (!piece) return;
 
     std::string code = piece->toString();
-    const AnimConfig& cfg = spriteLoader.configManager.getConfig(code, PieceStatus::Move);
+    const AnimConfig& cfg = animationConfig.getConfig(code, PieceStatus::Move);
     double speed = cfg.speed_m_per_sec;
 
     if (speed <= 0)
@@ -86,7 +83,7 @@ void GameEngine::requestJump(CellPos pos) {
 
     Piece* piece = board.getPiece(pos.row, pos.col);
     std::string code = piece->toString();
-    const AnimConfig& cfg =  spriteLoader.configManager.getConfig(code, PieceStatus::Jump);
+    const AnimConfig& cfg =  animationConfig.getConfig(code, PieceStatus::Jump);
     double speed = cfg.speed_m_per_sec;
 
     if (speed <= 0)

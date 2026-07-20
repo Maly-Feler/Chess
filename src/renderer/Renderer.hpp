@@ -1,5 +1,5 @@
 #pragma once
-#include "GameSnapshot.hpp"
+#include "./game_engine/GameSnapshot.hpp"
 #include "../controllerClick/CellPos.hpp"
 
 class Renderer {

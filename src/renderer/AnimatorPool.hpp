@@ -1,7 +1,7 @@
 #pragma once
 #include "SpriteAnimator.hpp"
 #include "../config/SpriteLoader.hpp"
-#include "GameSnapshot.hpp"
+#include "../game_engine/GameSnapshot.hpp"
 #include "../../cpp/src/img.hpp"
 #include <map>
 #include <string>

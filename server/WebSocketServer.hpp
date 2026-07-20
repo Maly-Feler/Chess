@@ -10,7 +10,6 @@
 
 //     void start();
 
-
 // private:
 
 //     using Server = websocketpp::server<websocketpp::config::asio>;
@@ -19,7 +18,6 @@
 
 //     int port;
 // };
-
 
 // #pragma once
 
@@ -46,33 +44,27 @@
 //     int port;
 // };
 
-
 #pragma once
 
 #include <websocketpp/config/asio_no_tls.hpp>
 #include <websocketpp/server.hpp>
 #include "../src/network/Serializer.hpp"
 #include "../src/commands/CommandExecutor.hpp"
-
+#include "../src/game_engine/GameEngine.hpp"
 
 class WebSocketServer
 {
 public:
-
-    WebSocketServer(
-        int port,
-        CommandExecutor& executor);
+    WebSocketServer(int port, GameEngine &engine, CommandExecutor &executor);
 
     void start();
 
 private:
-
-    using Server =
-        websocketpp::server<websocketpp::config::asio>;
+    using Server = websocketpp::server<websocketpp::config::asio>;
 
     Server server;
-
     int port;
 
-    CommandExecutor& executor;
+    GameEngine &engine;
+    CommandExecutor &executor;
 };
