@@ -6,7 +6,7 @@ namespace Network
     enum class MessageType
     {
         Login,
-        Click,
+        Command,
         Play,
         Snapshot,
         Text,

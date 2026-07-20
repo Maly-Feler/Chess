@@ -1,20 +1,18 @@
 #pragma once
 
 #include "WebSocketServer.hpp"
+#include "../src/commands/CommandExecutor.hpp"
 
 
 class NetworkServer
 {
 public:
 
-    explicit NetworkServer(int port);
-
+    NetworkServer(int port,CommandExecutor& executor);
     void start();
 
 
 private:
-
-    int port;
 
     WebSocketServer websocketServer;
 };

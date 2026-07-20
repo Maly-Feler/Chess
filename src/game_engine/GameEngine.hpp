@@ -8,7 +8,6 @@
 #include "../renderer/GameSnapshot.hpp"
 #include "../config/SpriteLoader.hpp"
 #include "../config/AnimConfig.hpp"
-#include "CommandType.hpp"
 #include <string>
 #include <vector>
 #include "../text_io/BoardParser.hpp"
@@ -30,7 +29,7 @@ public:
     void requestMove(CellPos from, CellPos to);
     void requestJump(CellPos pos);
     void handleWait(int ms);
-    void execute(const std::string& cmd);
+    // void execute(const std::string& cmd);
     int clock() const;
     GameSnapshot snapshot() const;
 
@@ -46,7 +45,6 @@ private:
 
     Board board;
 
-    BoardMapper mapper;
     RuleEngine ruleEngine;
     RealTimeArbiter arbiter;
     controllerClick controller;

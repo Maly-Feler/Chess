@@ -3,19 +3,19 @@
 #include <cmath>
 #include <sstream>
 
-static CommandType parseCommandType(const std::string& cmd) {
-    if (cmd == "print board")        return CommandType::PrintBoard;
-    if (cmd.substr(0, 5) == "click") return CommandType::Click;
-    if (cmd.substr(0, 4) == "jump")  return CommandType::Jump;
-    if (cmd.substr(0, 4) == "wait")  return CommandType::Wait;
-    return CommandType::Unknown;
-}
+// static CommandType parseCommandType(const std::string& cmd) {
+//     if (cmd == "print board")        return CommandType::PrintBoard;
+//     if (cmd.substr(0, 5) == "click") return CommandType::Click;
+//     if (cmd.substr(0, 4) == "jump")  return CommandType::Jump;
+//     if (cmd.substr(0, 4) == "wait")  return CommandType::Wait;
+//     return CommandType::Unknown;
+// }
 
-static std::pair<int,int> parseXY(const std::string& s) {
-    int x, y;
-    std::istringstream(s) >> x >> y;
-    return {x, y};
-}
+// static std::pair<int,int> parseXY(const std::string& s) {
+//     int x, y;
+//     std::istringstream(s) >> x >> y;
+//     return {x, y};
+// }
 
 GameEngine::GameEngine()
     : spriteLoader("assets/pieces2"),
@@ -114,39 +114,39 @@ void GameEngine::handleWait(int ms) {
     score.second += scoreTemp.second;
 }
 
-void GameEngine::execute(const std::string& cmd) {
-    switch (parseCommandType(cmd)) {
-        case CommandType::PrintBoard:
-            handleWait(0);
-            BoardPrinter().print(board);
-            break;
-        case CommandType::Click: {
-            if (gameOver) break;
-            auto [x, y] = parseXY(cmd.substr(6));
-            CellPos pos = mapper.toCell(x, y, board.rows, board.cols, 
-                                        cols() * CELL_SIZE_PX, rows() * CELL_SIZE_PX);
-            handleClick(pos);
-            break;
-        }
-        case CommandType::Jump: {
-            if (gameOver) break;
-            auto [x, y] = parseXY(cmd.substr(5));
-            CellPos pos = mapper.toCell(x, y, board.rows, board.cols, 
-                                        cols() * CELL_SIZE_PX, rows() * CELL_SIZE_PX);
-            requestJump(pos);
-            break;
-        }
-        case CommandType::Wait: {
-            if (gameOver) break;
-            int ms;
-            std::istringstream(cmd.substr(5)) >> ms;
-            handleWait(ms);
-            break;
-        }
-        case CommandType::Unknown:
-            break;
-    }
-}
+// void GameEngine::execute(const std::string& cmd) {
+//     switch (parseCommandType(cmd)) {
+//         case CommandType::PrintBoard:
+//             handleWait(0);
+//             BoardPrinter().print(board);
+//             break;
+//         case CommandType::Click: {
+//             if (gameOver) break;
+//             auto [x, y] = parseXY(cmd.substr(6));
+//             CellPos pos = mapper.toCell(x, y, board.rows, board.cols, 
+//                                         cols() * CELL_SIZE_PX, rows() * CELL_SIZE_PX);
+//             handleClick(pos);
+//             break;
+//         }
+//         case CommandType::Jump: {
+//             if (gameOver) break;
+//             auto [x, y] = parseXY(cmd.substr(5));
+//             CellPos pos = mapper.toCell(x, y, board.rows, board.cols, 
+//                                         cols() * CELL_SIZE_PX, rows() * CELL_SIZE_PX);
+//             requestJump(pos);
+//             break;
+//         }
+//         case CommandType::Wait: {
+//             if (gameOver) break;
+//             int ms;
+//             std::istringstream(cmd.substr(5)) >> ms;
+//             handleWait(ms);
+//             break;
+//         }
+//         case CommandType::Unknown:
+//             break;
+//     }
+// }
 
 int GameEngine::clock() const { return arbiter.clock(); }
 

@@ -1,17 +1,14 @@
 #include "src/game_engine/GameEngine.hpp"
 #include "src/renderer/ImgRenderer.hpp"
 #include "server/NetworkServer.hpp"
+#include "src/commands/CommandExecutor.hpp"
 
 #include <iostream>
-
 
 int main()
 {
     try
     {
-        NetworkServer server(8080);
-        server.start();
-
         GameEngine engine;
 
         engine.loadBoard("board.txt");
@@ -20,26 +17,28 @@ int main()
             "assets/pieces2",
             "assets/board.png",
             engine.rows(),
-            engine.cols()
-        );
+            engine.cols());
+
+        CommandExecutor executor(engine);
+
+        NetworkServer server(8080, executor);
+        server.start();
 
         renderer.setCommandCallback(
-            [&](const std::string& cmd)
+            [&](const std::string &cmd)
             {
-                engine.execute(cmd);
-            }
-        );
+                executor.execute(cmd);
+            });
 
         renderer.setSnapCallback(
             [&]()
             {
                 return engine.snapshot();
-            }
-        );
+            });
 
         renderer.run();
     }
-    catch (const std::exception& e)
+    catch (const std::exception &e)
     {
         std::cerr << "ERROR: " << e.what() << std::endl;
         std::cin.get();

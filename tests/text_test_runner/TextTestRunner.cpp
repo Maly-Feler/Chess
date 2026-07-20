@@ -1,6 +1,7 @@
 #include "TextTestRunner.hpp"
 #include "../../src/game_engine/GameEngine.hpp"
 #include "../../src/text_io/BoardParser.hpp"
+#include "../../src/commands/CommandExecutor.hpp"
 #include <string>
 #include <vector>
 #include <iostream>
@@ -23,6 +24,9 @@ void TextTestRunner::run(std::istream& in) {
 
     GameEngine engine;
     engine.loadBoard("board.txt");
+
+    CommandExecutor executor(engine);
+
     std::string error;
     if (!BoardParser().parse(boardLines, engine.getBoard(), error)) {
         std::cout << error << "\n";
@@ -30,5 +34,5 @@ void TextTestRunner::run(std::istream& in) {
     }
 
     for (const std::string& cmd : commands)
-        engine.execute(cmd);
+        executor.execute(cmd);
 }

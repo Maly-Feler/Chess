@@ -13,8 +13,8 @@ namespace Network
         case MessageType::Login:
             return "Login";
 
-        case MessageType::Click:
-            return "Click";
+        case MessageType::Command:
+            return "Command";
 
         case MessageType::Play:
             return "Play";
@@ -37,8 +37,8 @@ namespace Network
         if (type == "Login")
             return MessageType::Login;
 
-        if (type == "Click")
-            return MessageType::Click;
+        if (type == "Command")
+            return MessageType::Command;
 
         if (type == "Play")
             return MessageType::Play;
@@ -68,14 +68,10 @@ namespace Network
     Message Serializer::deserialize(const std::string &data)
     {
         auto json = nlohmann::json::parse(data);
-
         Message message;
 
-        message.type =
-            stringToMessageType(json.at("type").get<std::string>());
-
-        message.payload =
-            json.at("payload").get<std::string>();
+        message.type = stringToMessageType(json.at("type").get<std::string>());
+        message.payload = json.at("payload").get<std::string>();
 
         return message;
     }
