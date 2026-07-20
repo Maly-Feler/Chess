@@ -1,5 +1,5 @@
 #include "BoardBuilder.hpp"
-#include "PieceFactory.hpp"
+#include "../model/PieceFactory.hpp"
 #include <sstream>
 
 bool BoardBuilder::build(const std::string& input, Board& board, std::string& error) const {

@@ -1,5 +1,5 @@
 #pragma once
-#include "../model/Piece.hpp"
+#include "./Piece.hpp"
 #include "../Constants.hpp"
 #include <string>
 #include <memory>
