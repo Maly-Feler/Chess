@@ -18,7 +18,20 @@ file(GLOB_RECURSE SOURCES
 list(REMOVE_ITEM SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/src/main_sfml.cpp")
 list(REMOVE_ITEM SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/tests/test_new.cpp")
 
-add_executable(${PROJECT_NAME} ${SOURCES} main.cpp)
+file(GLOB_RECURSE HEADERS
+    "src/*.hpp"
+)
+
+file(GLOB_RECURSE SERVER_SOURCES
+    "server/*.cpp"
+)
+
+add_executable(${PROJECT_NAME}
+    ${SOURCES}
+    ${HEADERS}
+    ${SERVER_SOURCES}
+    main.cpp
+)
 
 target_include_directories(${PROJECT_NAME} PRIVATE
     ${OPENCV_INCLUDE_DIR}
