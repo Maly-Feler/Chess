@@ -1,7 +1,7 @@
 #pragma once
 
+#include <cctype>
 #include <string>
-
 class JsonHelper {
 public:
     static std::string extractStr(

@@ -1,5 +1,5 @@
 #pragma once
-#include "./game_engine/GameSnapshot.hpp"
+#include "../game_engine/GameSnapshot.hpp"
 
 class Renderer {
 public:

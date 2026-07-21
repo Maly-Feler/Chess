@@ -1,7 +1,11 @@
 #pragma once
 #include "../game_engine/PieceStatus.hpp"
 #include "AnimConfig.hpp"
+#include "JsonHelper.hpp"
+#include <fstream>
+#include <stdexcept>
 #include <string>
+#include <cctype>
 #include <map>
 
 class PieceConfigManager {

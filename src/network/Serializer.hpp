@@ -4,6 +4,8 @@
 #include "../game_engine/GameSnapshot.hpp"
 #include "../model/Piece.hpp"
 #include <string>
+#include <nlohmann/json.hpp>
+#include <stdexcept>
 
 namespace Network
 {

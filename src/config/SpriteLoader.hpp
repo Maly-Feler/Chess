@@ -1,9 +1,11 @@
 #pragma once
-#include "../../cpp/src/img.hpp"
+#include "../vision/img.hpp"
 #include "../game_engine/PieceStatus.hpp"
 #include "../config/AnimConfig.hpp"
 #include "../config/PieceConfigManager.hpp"
 #include "../model/Piece.hpp"
+#include "../Constants.hpp"
+#include <filesystem>
 #include <string>
 #include <vector>
 #include <map>

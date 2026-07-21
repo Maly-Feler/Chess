@@ -1,6 +1,4 @@
 #include "SpriteLoader.hpp"
-#include "../Constants.hpp"
-#include <filesystem>
 
 namespace fs = std::filesystem;
 

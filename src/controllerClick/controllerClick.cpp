@@ -1,5 +1,3 @@
-// controllerClick.cpp
-
 #include "controllerClick.hpp"
 
 ClickResult controllerClick::onClick(CellPos pos, const Board &board, PieceStatus status,

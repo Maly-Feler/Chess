@@ -2,9 +2,11 @@
 #include "SpriteAnimator.hpp"
 #include "../config/SpriteLoader.hpp"
 #include "../game_engine/GameSnapshot.hpp"
-#include "../../img/src/img.hpp"
+#include "../vision/img.hpp"
 #include <map>
 #include <string>
+#include <set>
+#include "../Constants.hpp"
 
 class AnimatorPool {
 public:

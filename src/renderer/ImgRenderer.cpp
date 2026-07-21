@@ -1,6 +1,4 @@
 #include "ImgRenderer.hpp"
-#include <chrono>
-#include "../Constants.hpp"
 #include <iostream>
 
 ImgRenderer::ImgRenderer(const std::string &spritesPath, const std::string &boardImagePath,

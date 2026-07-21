@@ -1,6 +1,7 @@
 #pragma once
 
 #include "CellPos.hpp"
+#include "../Constants.hpp"
 
 class BoardMapper
 {

@@ -1,5 +1,5 @@
 #pragma once
-#include "../buffer/SoundEffects.hpp"
+#include "../audio/SoundEffects.hpp"
 #include "../model/Board.hpp"
 #include "Motion.hpp"
 #include "../Constants.hpp"

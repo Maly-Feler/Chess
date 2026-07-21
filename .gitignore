@@ -34,7 +34,7 @@ _deps/
 *.iml
 
 # OpenCV (large binary dependency - should not be committed)
-img/OpenCV_451/
+opencv2
 
 # Test output files
 *.txt

@@ -14,7 +14,7 @@
 #include <fstream>
 #include <iostream>
 #include "SnapshotBuilder.hpp"
-#include "../buffer/SoundEffects.hpp"
+#include "../audio/SoundEffects.hpp"
 
 class GameEngine
 {

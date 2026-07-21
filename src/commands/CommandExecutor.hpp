@@ -3,6 +3,7 @@
 #include "../game_engine/GameEngine.hpp"
 #include "../text_io/BoardPrinter.hpp"
 #include "CommandType.hpp"
+#include <sstream>
 
 class CommandExecutor
 {
