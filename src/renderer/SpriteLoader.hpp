@@ -1,5 +1,5 @@
 #pragma once
-#include "../vision/img.hpp"
+#include "../../opencv2/src/img.hpp"
 #include "../game_engine/PieceStatus.hpp"
 #include "../config/AnimConfig.hpp"
 #include "../config/PieceConfigManager.hpp"

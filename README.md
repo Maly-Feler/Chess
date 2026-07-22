@@ -40,7 +40,6 @@ Chess/
 │   ├── renderer/
 │   ├── controllerClick/
 │   ├── audio/
-│   └── vision/
 │
 └── CMakeLists.txt
 ```

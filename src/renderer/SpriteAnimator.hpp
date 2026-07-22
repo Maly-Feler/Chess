@@ -1,5 +1,5 @@
 #pragma once
-#include "../config/SpriteLoader.hpp"
+#include "SpriteLoader.hpp"
 #include <string>
 
 class SpriteAnimator {

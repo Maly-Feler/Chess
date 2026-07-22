@@ -10,10 +10,9 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 # External
 # =====================
 
-set(OPENCV_DIR "${CMAKE_CURRENT_SOURCE_DIR}/img/OpenCV_451")
+set(OPENCV_DIR "${CMAKE_CURRENT_SOURCE_DIR}/opencv2/OpenCV_451")
 set(OPENCV_INCLUDE_DIR "${OPENCV_DIR}/include")
 set(OPENCV_LIB_DIR "${OPENCV_DIR}/bin")
-
 
 # =====================
 # Shared source
@@ -34,19 +33,19 @@ file(GLOB_RECURSE COMMON_HEADERS
 # =====================
 
 file(GLOB_RECURSE CLIENT_SOURCES
+    "opencv2/src/img.cpp"
     "client/*.cpp"
     "src/renderer/*.cpp"
     "src/controllerClick/*.cpp"
     "src/network/*.cpp"
-    "src/vision/*.cpp"
 )
 
 file(GLOB_RECURSE CLIENT_HEADERS
+    "opencv2/src/img.hpp"
     "client/*.hpp"
     "src/renderer/*.hpp"
     "src/controllerClick/*.hpp"
     "src/network/*.hpp"
-    "src/vision/*.hpp"
 )
 
 
@@ -62,7 +61,10 @@ target_include_directories(KungFuChessClient PRIVATE
     "${CMAKE_CURRENT_SOURCE_DIR}/external/websocketpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/external"
     "${CMAKE_CURRENT_SOURCE_DIR}/external/asio/asio/include"
+
     "${CMAKE_CURRENT_SOURCE_DIR}/src"
+    "${CMAKE_CURRENT_SOURCE_DIR}/opencv2/src"
+
     "${OPENCV_INCLUDE_DIR}"
 )
 
@@ -100,6 +102,7 @@ file(GLOB_RECURSE SERVER_SOURCES
     "src/commands/*.cpp"
     "src/text_io/*.cpp"
     "src/audio/*.cpp"
+    "src/controllerClick/*.cpp"
 )
 
 
@@ -114,6 +117,7 @@ file(GLOB_RECURSE SERVER_HEADERS
     "src/commands/*.hpp"
     "src/text_io/*.hpp"
     "src/audio/*.hpp"
+    "src/controllerClick/*.hpp"
 )
 
 
@@ -129,9 +133,12 @@ target_include_directories(KungFuChessServer PRIVATE
     "${CMAKE_CURRENT_SOURCE_DIR}/external/websocketpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/external"
     "${CMAKE_CURRENT_SOURCE_DIR}/external/asio/asio/include"
-    "${CMAKE_CURRENT_SOURCE_DIR}/src"
-)
 
+    "${CMAKE_CURRENT_SOURCE_DIR}/src"
+    "${CMAKE_CURRENT_SOURCE_DIR}/opencv2/src"
+
+    "${OPENCV_INCLUDE_DIR}"
+)
 
 target_compile_definitions(KungFuChessServer PRIVATE
     ASIO_STANDALONE

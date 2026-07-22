@@ -1,7 +1,7 @@
 // #include "src/game_engine/GameEngine.hpp"
 // #include "server/NetworkServer.hpp"
 // #include "src/commands/CommandExecutor.hpp"
-#include "../src/network/NetworkClient.hpp"
+#include "NetworkClient.hpp"
 #include "../src/renderer/ImgRenderer.hpp"
 #include "../Board.hpp"
 #include <thread>

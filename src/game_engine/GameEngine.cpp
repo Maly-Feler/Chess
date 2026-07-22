@@ -9,7 +9,7 @@ GameEngine::GameEngine() {
         arbiter = RealTimeArbiter();
     });
 
-    SoundEffects::init()
+    SoundEffects::init();
 }
 
 int GameEngine::rows() const

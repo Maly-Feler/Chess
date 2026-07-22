@@ -1,7 +1,7 @@
 #include "AnimationConfigProvider.hpp"
 
 
-AnimationConfigProvider::AnimationConfigProvider() : configManager("assets/pieces2")
+AnimationConfigProvider::AnimationConfigProvider() : configManager("assets/image")
 {
 }
 
